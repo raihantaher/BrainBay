@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using BrainBay.Core.Data;
 using BrainBay.Core.Models;
@@ -43,6 +40,18 @@ namespace BrainBay.Core.Services
         {
             _context.Characters.RemoveRange(_context.Characters);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Character> CreateCharacterAsync(Character character)
+        {
+            var maxId = await _context.Characters.MaxAsync(c => (int?)c.Id) ?? 0;
+            
+            character.Id = maxId + 1;
+            
+            await _context.Characters.AddAsync(character);
+            await _context.SaveChangesAsync();
+            
+            return character;
         }
     }
 } 

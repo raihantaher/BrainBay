@@ -1,5 +1,3 @@
-using System;
-
 namespace BrainBay.Core.Models
 {
     public class Character

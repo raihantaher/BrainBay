@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
 using BrainBay.Core.Models;
 
 namespace BrainBay.Core.Services
@@ -26,7 +22,6 @@ namespace BrainBay.Core.Services
             }
             catch (Exception ex)
             {
-                // Log the error or handle it appropriately
                 throw new Exception("Failed to fetch characters from Rick and Morty API", ex);
             }
         }

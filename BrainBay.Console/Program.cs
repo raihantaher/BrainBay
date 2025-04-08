@@ -10,29 +10,17 @@ namespace BrainBay.Console
     {
         static async Task Main(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .Build();
-
-            var services = new ServiceCollection();
-            ConfigureServices(services, configuration);
+            var configuration = BuildConfiguration();
+            var services = ConfigureServices(configuration);
 
             using var serviceProvider = services.BuildServiceProvider();
-            var characterService = serviceProvider.GetRequiredService<ICharacterService>();
-            var apiService = serviceProvider.GetRequiredService<IRickAndMortyApiService>();
+            var syncService = serviceProvider.GetRequiredService<ICharacterSyncService>();
 
             try
             {
-                System.Console.WriteLine("Fetching characters from Rick and Morty API...");
-                var aliveCharacters = await apiService.GetAliveCharactersAsync();
-                
-                System.Console.WriteLine($"Found {aliveCharacters.Count()} alive characters.");
-                
-                await characterService.ClearCharactersAsync();
-                await characterService.SaveCharactersAsync(aliveCharacters);
-                
-                System.Console.WriteLine("Characters saved successfully!");
+                System.Console.WriteLine("Starting character synchronization...");
+                await syncService.SyncCharactersFromApiAsync();
+                System.Console.WriteLine("Characters synchronized successfully!");
             }
             catch (Exception ex)
             {
@@ -40,13 +28,26 @@ namespace BrainBay.Console
             }
         }
 
-        private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+        private static IConfiguration BuildConfiguration()
         {
+            return new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+        }
+
+        private static IServiceCollection ConfigureServices(IConfiguration configuration)
+        {
+            var services = new ServiceCollection();
+
             services.AddDbContext<BrainBayContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddHttpClient<IRickAndMortyApiService, RickAndMortyApiService>();
             services.AddScoped<ICharacterService, CharacterService>();
+            services.AddScoped<ICharacterSyncService, CharacterSyncService>();
+
+            return services;
         }
     }
 }

@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
 using Moq;
 using Moq.Protected;
-using Xunit;
 using BrainBay.Core.Models;
 using BrainBay.Core.Services;
 

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace BrainBay.Core.Data;
 
@@ -7,8 +8,14 @@ public class BrainBayContextFactory : IDesignTimeDbContextFactory<BrainBayContex
 {
     public BrainBayContext CreateDbContext(string[] args)
     {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development"}.json", optional: true)
+            .Build();
+
         var optionsBuilder = new DbContextOptionsBuilder<BrainBayContext>();
-        optionsBuilder.UseSqlServer("Server=rtdatabase.cfoay2c6o63s.eu-central-1.rds.amazonaws.com,1433;Database=BrainBay;User Id=admin;Password=brainBay123;TrustServerCertificate=True;");
+        optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 
         return new BrainBayContext(optionsBuilder.Options);
     }

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using BrainBay.Core.Models;
 
 namespace BrainBay.Core.Services
@@ -11,5 +9,6 @@ namespace BrainBay.Core.Services
         Task<IEnumerable<Character>> GetCharactersByOriginAsync(string origin);
         Task SaveCharactersAsync(IEnumerable<Character> characters);
         Task ClearCharactersAsync();
+        Task<Character> CreateCharacterAsync(Character character);
     }
 } 

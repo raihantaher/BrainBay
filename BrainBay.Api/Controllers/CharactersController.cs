@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using BrainBay.Core.Services;
@@ -61,6 +58,28 @@ namespace BrainBay.Api.Controllers
         {
             var characters = await _characterService.GetCharactersByOriginAsync(origin);
             return Ok(characters);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Character>> CreateCharacter(Character character)
+        {
+            try
+            {
+                var createdCharacter = await _characterService.CreateCharacterAsync(character);
+                
+                // Clear the cache since we've added a new character
+                _cache.Remove(CacheKey);
+                
+                return CreatedAtAction(
+                    nameof(GetCharacter),
+                    new { id = createdCharacter.Id },
+                    createdCharacter
+                );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Failed to create character", error = ex.Message });
+            }
         }
     }
 } 
