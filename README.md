@@ -55,6 +55,12 @@ The API will be available at `https://localhost:7001` (or a similar port).
 - Supports filtering characters by origin
 - Auto-increments character IDs
 
+## Limitations
+
+- No UI or view layer has been implemented due to time constraints
+- API responses are in JSON format only
+- No authentication or authorization mechanisms
+
 ## Testing
 
 Run the tests using:
