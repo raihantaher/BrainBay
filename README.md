@@ -44,6 +44,7 @@ The API will be available at `https://localhost:7001` (or a similar port).
 - GET `/api/characters` - Get all characters
 - GET `/api/characters/{id}` - Get a specific character by ID
 - GET `/api/characters/origin/{origin}` - Get characters by origin
+- POST `/api/characters` - Create a new character
 
 ## Features
 
@@ -52,6 +53,7 @@ The API will be available at `https://localhost:7001` (or a similar port).
 - Caches character data for 5 minutes
 - Provides response headers to indicate data source
 - Supports filtering characters by origin
+- Auto-increments character IDs
 
 ## Testing
 
