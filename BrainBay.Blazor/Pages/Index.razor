@@ -1,0 +1,131 @@
+@page "/"
+@using BrainBay.Core.Models
+@using BrainBay.Blazor.Models
+@using BrainBay.Blazor.Services
+@inject CharacterApiService CharacterService
+
+<PageTitle>Characters</PageTitle>
+
+<h3>Characters</h3>
+
+<div class="mb-4">
+    <h4>Add New Character</h4>
+    <div class="form-group">
+        <label>Name:</label>
+        <input @bind="newCharacter.Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Status:</label>
+        <input @bind="newCharacter.Status" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Species:</label>
+        <input @bind="newCharacter.Species" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Origin:</label>
+        <input @bind="newCharacter.Origin" class="form-control" />
+    </div>
+    <button @onclick="CreateCharacter" class="btn btn-primary mt-2">Add Character</button>
+</div>
+
+<div class="mb-4">
+    <h4>Filter by Origin</h4>
+    <div class="form-group">
+        <input @bind="originFilter" @bind:event="oninput" class="form-control" placeholder="Enter origin" />
+        <button @onclick="FilterByOrigin" class="btn btn-secondary mt-2">Filter</button>
+        <button @onclick="LoadAllCharacters" class="btn btn-secondary mt-2">Show All</button>
+    </div>
+</div>
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @errorMessage
+    </div>
+}
+
+@if (characters == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Species</th>
+                <th>Origin</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var character in characters)
+            {
+                <tr>
+                    <td>@character.Name</td>
+                    <td>@character.Status</td>
+                    <td>@character.Species</td>
+                    <td>@character.Origin?.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<Character>? characters;
+    private CharacterModel newCharacter = new();
+    private string originFilter = string.Empty;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAllCharacters();
+    }
+
+    private async Task LoadAllCharacters()
+    {
+        try
+        {
+            errorMessage = null;
+            characters = await CharacterService.GetCharactersAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error loading characters: {ex.Message}";
+        }
+    }
+
+    private async Task FilterByOrigin()
+    {
+        try
+        {
+            errorMessage = null;
+            if (!string.IsNullOrWhiteSpace(originFilter))
+            {
+                characters = await CharacterService.GetCharactersByOriginAsync(originFilter);
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error filtering characters: {ex.Message}";
+        }
+    }
+
+    private async Task CreateCharacter()
+    {
+        try
+        {
+            errorMessage = null;
+            await CharacterService.CreateCharacterAsync(newCharacter);
+            newCharacter = new();
+            await LoadAllCharacters();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error creating character: {ex.Message}";
+        }
+    }
+} 

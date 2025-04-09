@@ -10,6 +10,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost:7188")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Add DbContext
 builder.Services.AddDbContext<BrainBayContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -45,6 +56,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(); // Enable CORS
 app.UseAuthorization();
 app.MapControllers();
 
