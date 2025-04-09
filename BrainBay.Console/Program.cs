@@ -43,7 +43,13 @@ namespace BrainBay.Console
             services.AddDbContext<BrainBayContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddHttpClient<IRickAndMortyApiService, RickAndMortyApiService>();
+            services.AddHttpClient<IRickAndMortyApiService, RickAndMortyApiService>(client =>
+            {
+                client.BaseAddress = new Uri("https://rickandmortyapi.com/api/");
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.Timeout = TimeSpan.FromSeconds(30);
+            });
+
             services.AddScoped<ICharacterService, CharacterService>();
             services.AddScoped<ICharacterSyncService, CharacterSyncService>();
 

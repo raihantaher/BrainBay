@@ -6,7 +6,6 @@ namespace BrainBay.Core.Services
     public class RickAndMortyApiService : IRickAndMortyApiService
     {
         private readonly HttpClient _httpClient;
-        private const string BaseUrl = "https://rickandmortyapi.com/api";
 
         public RickAndMortyApiService(HttpClient httpClient)
         {
@@ -17,7 +16,7 @@ namespace BrainBay.Core.Services
         {
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<ApiResponse>($"{BaseUrl}/character/");
+                var response = await _httpClient.GetFromJsonAsync<ApiResponse>("character/");
                 return response?.Results?.Where(c => c.Status.ToLower() == "alive") ?? Enumerable.Empty<Character>();
             }
             catch (Exception ex)

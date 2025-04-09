@@ -24,6 +24,14 @@ builder.Services.AddDbContext<BrainBayContext>(options =>
 // Add Memory Cache
 builder.Services.AddMemoryCache();
 
+// Add HttpClient
+builder.Services.AddHttpClient<IRickAndMortyApiService, RickAndMortyApiService>(client =>
+{
+    client.BaseAddress = new Uri("https://rickandmortyapi.com/api/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
 // Add Character Service
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 
