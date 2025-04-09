@@ -3,6 +3,7 @@
 This solution consists of two main components:
 1. A console application that fetches character data from the Rick and Morty API and stores it in a SQL database
 2. A web API that serves the character data with caching
+3. A Blazor app to show, filter and add characters
 
 ## Prerequisites
 
@@ -37,7 +38,15 @@ cd BrainBay.Api
 dotnet run
 ```
 
+7. Run the Blazor app:
+
+```bash
+cd BrainBay.Blazor
+dotnet run
+```
+
 The API will be available at `https://localhost:7001` (or a similar port).
+The Blazor app will be available at `https://localhost:7188` (or a similar port).
 
 ## API Endpoints
 
@@ -57,7 +66,6 @@ The API will be available at `https://localhost:7001` (or a similar port).
 
 ## Limitations
 
-- No UI or view layer has been implemented due to time constraints
 - API responses are in JSON format only
 - No authentication or authorization mechanisms
 
